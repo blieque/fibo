@@ -1,130 +1,128 @@
 #include <stdlib.h>
 #include <stdio.h>
+#include <string.h>
+#include <unistd.h>
 
-int argc;
-char *argv[];
 char const colour_normal[]		= "\033[0m",
 		   colour_pale_yellow[]	= "\033[93m";
 
-int get_limit() {
+#include "functions.h"
 
-	int limit;
+int main(int argc, char *argv[]) {
 
-	if (argc > 1) {
+	/* parsing arguments */
 
-		int limit_arg	= atoi(argv[1]);
+	int arg,
+		arg_showseq = 0;
+	for (arg = 1; arg < argc; arg++) {
 
-		if (limit_arg > 0) {
-			limit	= limit_arg;
-		} else {
-			limit	= -1;
-		}
+		if (strcmp(argv[arg], "-h") == 0) {
 
-	} else {
+			help(argv[0]);
+			return 0;
 
-		int user_input;
+		} else if (strcmp(argv[arg], "-s") == 0) {
 
-		printf("Please enter an integer above zero (pro tip: don't enter letters): ");
-		scanf("%d", &user_input);
-		printf("%d\n", user_input);
+			arg_showseq	= 1;
 
-		if (user_input > 0) {
-			limit	= user_input;
-		} else {
-			limit	= -2;
 		}
 
 	}
-
-	return limit;
-
-}
-
-int error_handle(int limit) {
-
-	if (limit < 0) {
-
-		char *error_message;
-
-		switch (limit) {
-
-			case -1:
-				error_message	= "Your input was less than 0, or not an integer.";
-				break;
-
-			case -2:
-				error_message	= "The argument given should be an integer above 0, and below 65536.";
-				break;
-
-			default:
-				error_message	= "Unidentified error occured.";
-				break;
-
-		}
-
-		printf("%s%s%s\nSee \"%s -h\" for help.\n",
-				colour_pale_yellow,
-				error_message,
-				colour_normal,
-				argv[0]);
-		return 0;
-
-	} else {
-
-		return 1;
-
-	}
-
-}
-
-int main() {
 
 	/* user input fun */
 
 	unsigned int const limit	= get_limit(argc, argv);
-	int error_check				= error_handle(limit, argv[0]);
+	int error_check				= error_handle(limit, argv);
 
 	if (!error_check) {
 		return limit;
 	}
 
-	/* generating some fibonacci seq. */
-
-	printf("limit: %d", limit);
-
-	int fibonacci[limit],
-		output[limit],
-		i	= 2;
-	fibonacci[0] = fibonacci[1]	= 1;
-
-	while (fibonacci[i - 1] <= limit) {
-
-		fibonacci[i]	= fibonacci[i - 1] + fibonacci[i - 2];
-		i++;
-
-	}
-
 	/* the big loop */
 
-	char find = 'E';
+	int output[2 * (limit - 1)],
+		div;
 
-	const char *ptr = strchr(fibonacci, 0);
-	if (ptr) {
-	   int index = ptr - values;
-	}
+	memset(output, 0, sizeof(output));
 
-	j	= limit;
-	for (int i )
-	
-	for (int j = limit; j > 0; j--) {
+	for (div = limit; div > 1; div--) {
 
-		int mod	= j;
+		int const workarrsize	= 2 * div + 9;
+		int workindex	= 2,
+			*workarr	= malloc(workarrsize * sizeof(int));
+
+		workarr[0] = workarr[1] = 1;
+
+		while (!(workarr[workindex - 2] == 1 && workarr[workindex - 1] == 0)) {
+
+			workarr[workindex]	= (workarr[workindex - 2] + workarr[workindex - 1]) % div;
+
+			if (workarr[workindex] == 0) {
+				output[2 * (div - 2)]++;
+
+				if (output[2 * (div - 2) + 1] == 0) {
+					output[2 * (div - 2) + 1]	= workindex + 1;
+				}
+			}
+
+			workindex++;
+
+			if (workindex % (workarrsize - 1) == 0) {
+				int *newarr	=	realloc(workarr, (workindex + workarrsize) * sizeof(int));
+				if (newarr == NULL) {
+					free(workarr);
+					printf("Something went tits up. Quitting without dignity.\n");
+					return -4;
+				} else {
+					workarr	= newarr;
+				}
+			}
+
+		}
+
+		if (arg_showseq) {
+
+			printf("%d\t: 1,1,", div);
+
+			int j;
+			for (j = 2; j < workindex; j++) {
+
+				if (j != workindex - 1) {
+
+					printf("%d,", workarr[j]);
+					if (workarr[j] == 0) {
+						printf("\n\t  ");
+					}
+
+				} else {
+					printf("%d", workarr[j]);
+				}
+
+			}
+
+			printf("\n");
+			 
+		}
 
 	}
 
 	/* output */
 
-	printf("Quitting becuase my author hasn't written any code of meaning yet.\n");
+	if (arg_showseq) {
+		printf("\n");
+	}
+
+
+	int i;
+	for (i = 0; i < limit - 1; i++) {
+		 
+		printf("%d\t: { cc: %d, cl: %d }\n",
+				i + 2,
+				output[2 * i],
+				output[2 * i + 1]);
+		
+	}
+
 	return 0;
 
 }
