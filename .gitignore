@@ -21,6 +21,7 @@
 *.dylib
 
 # Executables
+fibo
 *.exe
 *.out
 *.app
