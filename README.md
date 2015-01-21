@@ -12,16 +12,14 @@ In order to explain, let's start with the first few digits of the Fibonnaci sequ
 
 Now if we write each digit `mod 2`, we get a pattern emerging.
 
-|			| | | | | | |  |  |  |  |
-|-----|-:|-:|-:|-:|-:|-:|-:|-:|-:|-:|
 | Fib. seq.	|1|1|2|3|5|8|13|21|34|55|
+|-----|-:|-:|-:|-:|-:|-:|-:|-:|-:|-:|
 | `mod 2`	|1|1|0|1|1|0| 1| 1| 0| 1|
 
 Every zero we find we mark as the end of a cycle. Every time the whole pattern starts to repeat, we mark the end of a period. In the example of `mod 2`, there is only one cycle per period, with a cycle length of three digits. Let's try the same with `mod 3`:
 
-|			| | | | | | |  |  |  |  |
-|-----|-:|-:|-:|-:|-:|-:|-:|-:|-:|-:|
 | Fib. seq. |1|1|2|3|5|8|13|21|34|55|
+|-----|-:|-:|-:|-:|-:|-:|-:|-:|-:|-:|
 | `mod 3`	|1|1|2|0|2|2| 1| 0| 1| 1|
 
 This time, there are two different cycles; 1, 1, 2, 0 and 2, 2, 1, 0. If you were to continue the sequence further, you'd find that the modulus sequence would alternate between the two. This means there is a cycle length of four, a cycle count of two-per-period, and a period length of eight. Consider the table below:
